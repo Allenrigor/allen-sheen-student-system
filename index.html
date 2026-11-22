@@ -1,62 +1,100 @@
-<script>
-  // --------------------------
-  // UPDATE THESE WITH YOUR REAL KEYS!
-  // --------------------------
-  const SUPABASE_URL = https://kqhfrlrfdzamcjzqooce.supabase.co
-  const SUPABASE_ANON_KEY = sb_publishable_2SYRWK1a3RGLs0Oq6x_eZg_lFRbz2Yn
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Records System</title>
 
-  // Initialize Supabase
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-  // Helper: Show messages
-  function showMessage(text) {
-    let msg = document.getElementById('auth-message');
-    if (!msg) {
-      msg = document.createElement('p');
-      msg.id = 'auth-message';
-      msg.setAttribute('role', 'status');
-      document.querySelector('form').after(msg);
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Student Records System</h1>
+    <p>Class demonstration. Fictional records only.</p>
+
+    <form id="login">
+      <h2>Operator sign in</h2>
+      <label>Email <input id="email" type="email" required /></label>
+      <label>Password <input id="password" type="password" required /></label>
+      <button type="submit">Sign in</button>
+      <button id="register" type="button">Register</button>
+    </form>
+
+    <p id="auth-message" role="status"></p>
+
+    <section id="app" hidden>
+      <h2>Welcome!</h2>
+      <p>Student records will appear here.</p>
+      <button id="signout">Sign Out</button>
+    </section>
+  </main>
+
+  <script>
+    // =====================================================
+    // 🔑 UPDATE THESE WITH YOUR REAL VALUES!
+    // =====================================================
+    const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+    const SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY_HERE";
+
+    // Initialize Supabase — ONLY ONCE
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Show messages to user
+    function showMessage(text) {
+      document.getElementById('auth-message').textContent = text;
     }
-    msg.textContent = text;
-  }
 
-  // Login
-  document.querySelector('#login').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    // Sign In
+    document.getElementById('login').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-    showMessage('Signing in...');
-    
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    
-    if (error) {
-      showMessage('Error: ' + error.message);
-    } else {
-      showMessage('Signed in successfully!');
-      document.querySelector('form').style.display = 'none';
-      document.getElementById('app').hidden = false;
-    }
-  });
+      showMessage('Signing in...');
+      
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        showMessage('❌ Error: ' + error.message);
+      } else {
+        showMessage('✅ Signed in successfully!');
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('app').hidden = false;
+      }
+    });
 
-  // Register
-  document.querySelector('#register').addEventListener('click', async function () {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    // Register
+    document.getElementById('register').addEventListener('click', async function () {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-    if (!email || !password) {
-      showMessage('Please enter email and password first.');
-      return;
-    }
+      if (!email || !password) {
+        showMessage('⚠️ Please enter email and password first.');
+        return;
+      }
 
-    showMessage('Creating account...');
-    
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    
-    if (error) {
-      showMessage('Error: ' + error.message);
-    } else {
-      showMessage('Account created! Check your email to confirm, then sign in.');
-    }
-  });
-</script>
+      showMessage('Creating account...');
+      
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      
+      if (error) {
+        showMessage('❌ Error: ' + error.message);
+      } else {
+        showMessage('✅ Account created! You can now sign in.');
+      }
+    });
+
+    // Sign Out
+    document.getElementById('signout').addEventListener('click', async function () {
+      await supabase.auth.signOut();
+      document.getElementById('login').style.display = 'block';
+      document.getElementById('app').hidden = true;
+      showMessage('👋 Signed out.');
+    });
+  </script>
+</body>
+</html>
