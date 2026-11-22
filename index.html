@@ -30,18 +30,20 @@
   </main>
 
   <script>
-    // 🔑 YOUR KEYS HERE
-    const SUPABASE_URL = "=https://kqhfrlrfdzamcjzqooce.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_2SYRWK1a3RGLs0Oq6x_eZg_lFRbz2Yn";
+    // ==========================================
+    // PUT YOUR REAL VALUES HERE — CAREFULLY!
+    // ==========================================
+    const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+    const SUPABASE_ANON_KEY = "YOUR_ANON_KEY_HERE";
 
-    // ONLY ONE declaration
+    // ↓↓↓ THIS SHOULD APPEAR EXACTLY ONCE IN THE WHOLE FILE ↓↓↓
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     function showMessage(text) {
       document.getElementById('auth-message').textContent = text;
     }
 
-    document.getElementById('login').addEventListener('submit', async e => {
+    document.getElementById('login').addEventListener('submit', async function (e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
@@ -55,7 +57,7 @@
       }
     });
 
-    document.getElementById('register').addEventListener('click', async () => {
+    document.getElementById('register').addEventListener('click', async function () {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       if (!email || !password) { showMessage('⚠️ Enter email & password first.'); return; }
@@ -65,7 +67,7 @@
       else showMessage('✅ Account created! You can now sign in.');
     });
 
-    document.getElementById('signout').addEventListener('click', async () => {
+    document.getElementById('signout').addEventListener('click', async function () {
       await supabase.auth.signOut();
       document.getElementById('login').style.display = 'block';
       document.getElementById('app').hidden = true;
