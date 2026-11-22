@@ -1,52 +1,100 @@
 <!doctype html>
 <html lang="en">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Student Records System</title>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
-<main>
-  <h1>Student Records System</h1>
-  <p>Class demonstration. Fictional records only.</p>
-  <form id="login">
-    <h2>Operator sign in</h2>
-    <label>Email <input id="email" type="email" required /></label>
-    <label>Password <input id="password" type="password" required /></label>
-    <button>Sign in</button>
-    <button id="register" type="button">Register</button>
-  </form>
-  <p id="auth-message" role="status"></p>
-  <section id="app" hidden>
-    <button id="logout" type="button">Sign out</button>
-    <h2>Add or edit a student</h2>
-    <form id="student-form">
-      <input id="student-id" type="hidden" />
-      <label>Student number <input id="student-no" required /></label>
-      <label>First name <input id="first-name" required /></label>
-      <label>Last name <input id="last-name" required /></label>
-      <label>Year level
-        <input id="year" type="number" min="1" max="4" required />
-      </label>
-      <label>Student email
-        <input id="student-email" type="email" required />
-      </label>
-      <label>Course <select id="course" required></select></label>
-      <button>Save student</button>
-      <button id="clear" type="button">Clear form</button>
+  <main>
+    <h1>Student Records System</h1>
+    <p>Class demonstration. Fictional records only.</p>
+
+    <form id="login">
+      <h2>Operator sign in</h2>
+      <label>Email <input id="email" type="email" required /></label>
+      <label>Password <input id="password" type="password" required /></label>
+      <button>Sign in</button>
+      <button id="register" type="button">Register</button>
     </form>
-    <p id="message" role="status"></p>
-    <h2>Student list</h2>
-    <label>Search name or student number <input id="search" /></label>
-    <button id="refresh" type="button">Refresh list</button>
-    <ul id="list"></ul>
-    <h2>Course report</h2>
-    <p>Choose a course above, then click Count students.</p>
-    <button id="count" type="button">Count students</button>
-    <p id="report" role="status"></p>
-  </section>
-</main>
-<script type="module" src="/src/main.js"></script>
+
+    <p id="auth-message" role="status"></p>
+    <section id="app" hidden>
+      <!-- Main app content will show after login -->
+      <h2>Welcome!</h2>
+      <p>Student records will appear here.</p>
+      <button id="signout">Sign Out</button>
+    </section>
+  </main>
+
+  <script>
+    // --------------------------
+    // UPDATE THESE WITH YOUR REAL KEYS!
+    // --------------------------
+    const SUPABASE_URL = "YOUR_PROJECT_URL_HERE";
+    const SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY_HERE";
+
+    // Initialize Supabase
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Helper: Show messages
+    function showMessage(text) {
+      $('#auth-message').text(text);
+    }
+
+    // Login
+    $('#login').on('submit', async function (e) {
+      e.preventDefault();
+      const email = $('#email').val();
+      const password = $('#password').val();
+
+      showMessage('Signing in...');
+      
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        showMessage('Error: ' + error.message);
+      } else {
+        showMessage('Signed in successfully!');
+        $('#login').hide();
+        $('#app').show();
+      }
+    });
+
+    // Register
+    $('#register').on('click', async function () {
+      const email = $('#email').val();
+      const password = $('#password').val();
+
+      if (!email || !password) {
+        showMessage('Please enter email and password first.');
+        return;
+      }
+
+      showMessage('Creating account...');
+      
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      
+      if (error) {
+        showMessage('Error: ' + error.message);
+      } else {
+        showMessage('Account created! Check your email to confirm, then sign in.');
+      }
+    });
+
+    // Sign Out
+    $('#signout').on('click', async function () {
+      await supabase.auth.signOut();
+      $('#login').show();
+      $('#app').hide();
+      showMessage('Signed out.');
+    });
+  </script>
 </body>
 </html>
