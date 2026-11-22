@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Student Records System</title>
 
-  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -34,61 +31,39 @@
   </main>
 
   <script>
-    // =====================================================
-    // 🔑 UPDATE THESE WITH YOUR REAL VALUES!
-    // =====================================================
-    const SUPABASE_URL =https://kqhfrlrfdzamcjzqooce.supabase.co;
-    const SUPABASE_ANON_KEY = sb_publishable_2SYRWK1a3RGLs0Oq6x_eZg_lFRbz2Yn;
+    const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+    const SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY_HERE";
 
-    // Initialize Supabase — ONLY ONCE
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Show messages to user
     function showMessage(text) {
       document.getElementById('auth-message').textContent = text;
     }
 
-    // Sign In
     document.getElementById('login').addEventListener('submit', async function (e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-
       showMessage('Signing in...');
-      
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      
-      if (error) {
-        showMessage('❌ Error: ' + error.message);
-      } else {
-        showMessage('✅ Signed in successfully!');
+      if (error) { showMessage('❌ Error: ' + error.message); }
+      else {
+        showMessage('✅ Signed in!');
         document.getElementById('login').style.display = 'none';
         document.getElementById('app').hidden = false;
       }
     });
 
-    // Register
     document.getElementById('register').addEventListener('click', async function () {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-
-      if (!email || !password) {
-        showMessage('⚠️ Please enter email and password first.');
-        return;
-      }
-
+      if (!email || !password) { showMessage('⚠️ Enter email and password first.'); return; }
       showMessage('Creating account...');
-      
       const { data, error } = await supabase.auth.signUp({ email, password });
-      
-      if (error) {
-        showMessage('❌ Error: ' + error.message);
-      } else {
-        showMessage('✅ Account created! You can now sign in.');
-      }
+      if (error) { showMessage('❌ Error: ' + error.message); }
+      else { showMessage('✅ Account created! You can now sign in.'); }
     });
 
-    // Sign Out
     document.getElementById('signout').addEventListener('click', async function () {
       await supabase.auth.signOut();
       document.getElementById('login').style.display = 'block';
