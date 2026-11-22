@@ -30,13 +30,10 @@
   </main>
 
   <script>
-    // ==========================================
-    // PUT YOUR REAL VALUES HERE — CAREFULLY!
-    // ==========================================
     const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
     const SUPABASE_ANON_KEY = "YOUR_ANON_KEY_HERE";
 
-    // ↓↓↓ THIS SHOULD APPEAR EXACTLY ONCE IN THE WHOLE FILE ↓↓↓
+    // ↓↓↓ THIS LINE MUST APPEAR EXACTLY ONCE ↓↓↓
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     function showMessage(text) {
